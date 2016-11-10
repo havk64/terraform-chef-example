@@ -4,6 +4,17 @@ provider "aws" {
   region 	= "${var.region}"
 }
 
+resource "aws_vpc" "default" {
+  cidr_block = "172.31.0.0/16"
+
+}
+
+resource "aws_subnet" "main" {
+  vpc_id = "${aws_vpc.default.id}"
+  cidr_block = "172.31.16.0/20"
+  map_public_ip_on_launch = "true"
+}
+
 resource "aws_instance" "chef" {
   ami = "ami-b63769a1"
   instance_type = "t2.micro"
@@ -17,8 +28,8 @@ resource "aws_instance" "chef" {
 
 resource "aws_security_group" "default" {
   name = "chef-rhel-sg"
-  description = "Temporary Security Group"
-  vpc_id = "vpc-863a2ee1"
+  description = "Chef Security Group"
+  vpc_id = "${aws_vpc.default.id}"
   ingress {
     from_port = 22
     to_port = 22
