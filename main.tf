@@ -47,7 +47,3 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-output "public ip" {
-  value = "${aws_instance.chef.public_ip}"
-}
