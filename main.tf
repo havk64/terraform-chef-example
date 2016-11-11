@@ -24,6 +24,17 @@ resource "aws_instance" "chef" {
   tags {
     Name = "chef-rehl"
   }
+
+  provisioner "file" {
+    source = "hello.rb"
+    destination = "/tmp/hello.rb"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chef-client --local-mode /tmp/hello.rb"
+    ]
+  }
 }
 
 resource "aws_security_group" "default" {
@@ -58,3 +69,13 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+
+/*
+provisioner "chef" {
+  node_name = "chef-rehl"
+  run_list =
+  user_name = "ec2-user"
+  user_key = "${file("rhel.pem")}"
+}
+*/
