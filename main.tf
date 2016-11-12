@@ -4,6 +4,9 @@ provider "aws" {
   region 	= "${var.region}"
 }
 
+# ===-----------------------------------------------------------------===
+#     VPC (Amazon Virtual Private Cloud)
+# ===-----------------------------------------------------------------===
 resource "aws_vpc" "default" {
   cidr_block = "172.31.0.0/16"
 
@@ -19,6 +22,9 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.default.id}"
 }
 
+# ===-----------------------------------------------------------------===
+#     Instance (Chef provisioned)
+# ===-----------------------------------------------------------------===
 resource "aws_instance" "chef" {
   ami = "ami-b63769a1"
   instance_type = "t2.micro"
@@ -45,6 +51,9 @@ resource "aws_instance" "chef" {
   }
 }
 
+# ===-----------------------------------------------------------------===
+#     Security Group
+# ===-----------------------------------------------------------------===
 resource "aws_security_group" "default" {
   name = "chef-rhel-sg"
   description = "Chef Security Group"
@@ -77,7 +86,11 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 /*
+# ===-----------------------------------------------------------------===
+#     Route table
+# ===-----------------------------------------------------------------===
 resource "aws_route_table" "r" {
   vpc_id = "${aws_vpc.default.id}"
 
