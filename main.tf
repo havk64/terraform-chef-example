@@ -26,6 +26,7 @@ resource "aws_instance" "chef" {
   key_name = "ubuntu"
   user_data = "${file("user_data.sh")}"
   depends_on = ["aws_internet_gateway.gw", "aws_security_group.default"]
+  subnet_id = "${aws_subnet.main.id}"
   tags {
     Name = "chef-rehl"
   }
