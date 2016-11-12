@@ -15,12 +15,17 @@ resource "aws_subnet" "main" {
   map_public_ip_on_launch = "true"
 }
 
+resource "aws_internet_gateway" "gw" {
+  vpc_id = "${aws_vpc.default.id}"
+}
+
 resource "aws_instance" "chef" {
   ami = "ami-b63769a1"
   instance_type = "t2.micro"
   vpc_security_group_ids = ["${aws_security_group.default.id}"]
   key_name = "ubuntu"
   user_data = "${file("user_data.sh")}"
+  depends_on = ["aws_internet_gateway.gw", "aws_security_group.default"]
   tags {
     Name = "chef-rehl"
   }
