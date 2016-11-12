@@ -25,15 +25,17 @@ resource "aws_instance" "chef" {
     Name = "chef-rehl"
   }
 
-  provisioner "file" {
-    source = "hello.rb"
-    destination = "/tmp/hello.rb"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chef-client --local-mode /tmp/hello.rb"
-    ]
+  provisioner "chef" {
+    node_name = "oliveira"
+    run_list = ["learn_chef_httpd::default"]
+    server_url = "https://api.chef.io/organizations/dgtal"
+    user_name = "oliveira"
+    user_key = "${file("oliveira.pem")}"
+    connection = {
+      type = "ssh"
+      user = "ec2-user"
+      private_key = "${file("rhel.pem")}"
+    }
   }
 }
 
@@ -69,13 +71,3 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-
-/*
-provisioner "chef" {
-  node_name = "chef-rehl"
-  run_list =
-  user_name = "ec2-user"
-  user_key = "${file("rhel.pem")}"
-}
-*/
